@@ -1,7 +1,7 @@
 <img src="WalkthroughFigures/cellwalker_icon.png" id="id" class="class" width="50" height="50" /> CellWalker Walkthrough
 ================
 
-This is a walkthrough of running CellWalker on SNARE-seq data generated in the paper "High-throughput sequencing of the transcriptome and chromatin accessibility in the same cell." Running this code requires the following packages for R: "data.table", "Matrix", "ggplot2", "TxDb.Mmusculus.UCSC.mm10.knownGene", and "org.Mm.eg.db."
+This is a walkthrough of running CellWalker (described [here](https://www.biorxiv.org/content/10.1101/847657v2.full)) on SNARE-seq data generated in the paper "High-throughput sequencing of the transcriptome and chromatin accessibility in the same cell." Running this code requires the following packages for R: "data.table", "Matrix", "ggplot2", "TxDb.Mmusculus.UCSC.mm10.knownGene", and "org.Mm.eg.db."
 
 First, load the scATAC-seq data in the form of a cell-by-peak matrix (available from GEO accession: GSE126074)
 
@@ -33,7 +33,7 @@ Next, we compute the Jaccard similarity between all cells (cell-to-cell edge wei
 distMat = jaccard(t(ATAC_Mat))
 ```
 
-Now we diffuse information over the combined network. For this walkthrough we test possible edge weights between 10<sup>−2</sup> and 10<sup>4</sup> and compute cell homogeneity at each weight to evaluate performance. Note that with many cell types cell homogeneity can be slow to compute (this section may take several hours to run).
+Now we diffuse information over the combined network. For this walkthrough we test possible edge weights between 10<sup>−2</sup> and 10<sup>4</sup> and compute cell homogeneity at each weight to evaluate performance. Note that with many cell types cell homogeneity can be slow to compute (this section may take several hours to run). For 10,000 cells, without computing cell homogeneity, CellWalker takes about 8 minutes to run for a single edge weight.
 
 ``` r
 i = length(cellTypes)
