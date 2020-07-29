@@ -65,11 +65,12 @@ random.walk = function(adj, r=0.5){
 
 #Compute cell homogeneity
 compute.cell.homogeneity = function(cellTypes, labelsAdjType, infMat){
-    median(sapply(cellTypes, function(cellType) 
+    i = length(cellTypes)
+    median(unlist(sapply(cellTypes, function(cellType) 
     	median(sapply(which(labelsAdjType==cellType), function(x) {
     		median(infMat[x+i,which(labelsAdjType==cellType)+i])/median(infMat[x+i,which(!labelsAdjType==cellType)+i])
     	}))
-    ))
+    )))
 }
 
 #Compute uncertain labels
