@@ -48,6 +48,7 @@ jaccard = function(m) {
 
 #combine weighted label edges with cell edges
 combine.graph = function(cells_in_markers, distMat, weight){
+	i = dim(cells_in_markers)[2]
 	rbind(cbind(matrix(0,i,i),t(weight*cells_in_markers)), cbind(weight*cells_in_markers,distMat))
 }
 
@@ -65,12 +66,12 @@ random.walk = function(adj, r=0.5){
 
 #Compute cell homogeneity
 compute.cell.homogeneity = function(cellTypes, labelsAdjType, infMat){
-    i = length(cellTypes)
-    median(unlist(sapply(cellTypes, function(cellType) 
+	i = length(cellTypes)
+  log(median(unlist(sapply(cellTypes, function(cellType) 
     	median(sapply(which(labelsAdjType==cellType), function(x) {
     		median(infMat[x+i,which(labelsAdjType==cellType)+i])/median(infMat[x+i,which(!labelsAdjType==cellType)+i])
     	}))
-    )))
+  ))))
 }
 
 #Compute uncertain labels
@@ -82,4 +83,48 @@ compute.uncertain.labels = function(cellTypes, cellTypeInf){
 	uncertainPairs = uncertaintyTypes[,uncertaintyScore < quantile(uncertaintyScore, .1)]
 	uncertainMat = sapply(cellTypes, function(c1) sapply(cellTypes, function(c2) length(which((uncertainPairs[1,]==c1 & uncertainPairs[2,]==c2) | (uncertainPairs[1,]==c2 & uncertainPairs[2,]==c1)))))
 	uncertainMat
+}
+
+#Compare two cell types
+compare.types = function(type1, type2, cellLabels, cellTypes, cellTypeInf){
+  cellWalk$normMat[cellLabels==type1 | cellLabels==type2,which(cellTypes==type1)]-cellWalk$normMat[cellLabels==type1 | cellLabels==type2,which(cellTypes==type2)]
+}
+
+#Correlate cell types with TADS
+correlate.TADS = function(TADRanges, type1, type2, scores, cellLabels, ATAC_Mat, ATAC_Peaks){
+  PeakRanges = as(ATAC_Peaks,"GRanges")
+  normSum = colSums(ATAC_Mat[,cellLabels==type1 | cellLabels==type2])
+  TADCor = sapply(1:length(TADRanges), function(TAD) {
+    whichPeaks = which(countOverlaps(PeakRanges, TADRanges[TAD])>0)
+    if(length(whichPeaks)==0){NA}
+    else if(length(whichPeaks)==1){cor.test(ATAC_Mat[whichPeaks,cellLabels==type1 | cellLabels==type2]/normSum, scores)$estimate}
+    else{cor.test(colSums(ATAC_Mat[whichPeaks,cellLabels==type1 | cellLabels==type2])/normSum, scores)$estimate}
+  })
+  TADCor
+}
+
+
+#Map bulk peaks
+labelBulk = function(bulkPeaks, infMat, ATAC_Mat, ATAC_Peaks, cellTypes){
+  
+  ATAC_Peaks = as(ATAC_Peaks, "GRanges")
+  peakOverlaps = findOverlaps(ATAC_Peaks, bulkPeaks)
+  
+  infCellOnType = sapply(1:length(bulkPeaks), function(e) {
+      whichPeaks = peakOverlaps@from[peakOverlaps@to==e]
+      if(length(whichPeaks)==0){
+        rep(NA, length(cellTypes))
+      } else{
+        testCells = ATAC_Mat[whichPeaks,]
+        if(length(whichPeaks)==1){
+          whichCells = which(testCells>0)
+        } else{
+          whichCells = which(colSums(testCells)>0)
+        }
+        rowSums(infMat[1:length(cellTypes),length(cellTypes)+whichCells])/length(whichCells)
+      }
+  })
+  
+  mappedLabel = apply(infCellOnType, 2, function(x) ifelse(length(which(is.na(x)))==0,cellTypes[order(x, decreasing = TRUE)[1]],NA))
+  mappedLabel
 }
