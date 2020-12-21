@@ -35,7 +35,7 @@ Next, we compute the Jaccard similarity between all cells (cell-to-cell edge wei
 distMat = jaccard(t(ATAC_Mat))
 ```
 
-Now we diffuse information over the combined network. For this walkthrough we test possible edge weights between 10<sup>−2</sup> and 10<sup>4</sup> and compute cell homogeneity at each weight to evaluate performance. For 10,000 cells, without computing cell homogeneity, CellWalker takes about 8 minutes to run for a single edge weight.
+Now we diffuse information over the combined network. For this walkthrough we test possible edge weights between 10<sup>−2</sup> and 10<sup>4</sup> and compute cell homogeneity at each weight to evaluate performance. For 10,000 cells CellWalker takes about 8 minutes to run for a single edge weight on a personal computer using one core.
 
 ``` r
 i = length(cellTypes)
