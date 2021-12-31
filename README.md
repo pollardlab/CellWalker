@@ -1,7 +1,11 @@
+NOTE: This is a walkthrough and the associated scripts for CellWalker (described [here](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02279-1)). For a the R package implementing and extending this method, see [CellWalkR](https://github.com/PFPrzytycki/CellWalkR).
+
+<br>
+
 <img src="WalkthroughFigures/cellwalker_icon.png" id="id" class="class" width="50" height="50" /> CellWalker Walkthrough
 ================
 
-This is a walkthrough of running CellWalker (described [here](https://www.biorxiv.org/content/10.1101/847657v2.full)) on SNARE-seq adult brain data generated in the paper "High-throughput sequencing of the transcriptome and chromatin accessibility in the same cell." Running this code requires the following packages for R: "data.table," "Matrix," "ggplot2," "TxDb.Mmusculus.UCSC.mm10.knownGene," and "org.Mm.eg.db."
+This is a walkthrough of running CellWalker (described [here](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02279-1)) on SNARE-seq adult brain data generated in the paper "High-throughput sequencing of the transcriptome and chromatin accessibility in the same cell." Running this code requires the following packages for R: "data.table," "Matrix," "ggplot2," "TxDb.Mmusculus.UCSC.mm10.knownGene," and "org.Mm.eg.db."
 
 The SNARE-seq data for adult and developing brain analyzed in the CellWalker paper are available from GEO accession number GSE126074. For other data analyzed in the paper: the 10x Single Cell Multiome ATAC + Gene Exp data for human healthy brain is [available from 10x after registration](https://support.10xgenomics.com/single-cell-multiome-atac-gex/datasets/1.0.0/human_brain_3k), and the scATAC-seq data on the developing human brain is a part of psychENCODE and is available to consortium members from synapse (synapse.org id [syn21392931](https://www.synapse.org/#!Synapse:syn21392931), not yet publically released).
 
